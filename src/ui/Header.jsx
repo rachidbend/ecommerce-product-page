@@ -29,9 +29,11 @@ const NavLink = styled.li`
   padding: 5rem 0;
   border-bottom: 4px solid transparent;
   cursor: pointer;
-  transition: border 0.3s ease;
+  transition: border 0.3s ease, color 0.3s ease;
+  color: var(--color-blue-200);
   &:hover {
     border-bottom: 4px solid var(--color-orange-100);
+    color: var(--color-blue-100);
   }
 `;
 

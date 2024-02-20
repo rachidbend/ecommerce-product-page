@@ -23,7 +23,7 @@ const GlobalStyles = styled.createGlobalStyle`
     --color-blue-300: hsl(220, 14%, 75%);
     --color-blue-400: hsl(223, 64%, 98%);
     --color-white: hsl(0, 0%, 100%);
-    --color-background-overlay: hsl(0, 0%, 0%);
+    --color-background-overlay: hsla(0, 0%, 0%, 0.7);
     --color-grey-100: hsl(240, 9%, 91%);
 
     /* font family */

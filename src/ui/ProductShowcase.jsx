@@ -1,7 +1,10 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { useShoppingCart } from '../contexts/ShoppingCartContext';
 import { useState } from 'react';
+import { IoCartOutline } from 'react-icons/io5';
+import ImageCarousel from './ImageCarousel';
 
 const StyledProductShowcase = styled.div`
   max-width: 101.5rem;
@@ -14,13 +17,6 @@ const StyledProductShowcase = styled.div`
   grid-template-rows: auto;
   align-items: center;
   font-family: var(--font-main);
-`;
-
-const ImagePlaceholder = styled.img`
-  /* max-width: 44.5rem; */
-  max-width: 100%;
-  height: auto;
-  border-radius: 1.6rem;
 `;
 
 const ContentContainer = styled.div``;
@@ -83,19 +79,75 @@ const DiscountContainer = styled.div`
 // ***********************************
 
 const QuantityContainer = styled.div`
-  padding: 0 1.6rem;
-  max-width: 15.7rem;
+  padding: 1.8rem 0.8rem;
+  width: 15.7rem;
   height: 5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--color-blue-400);
   border-radius: 0.9rem;
+  /* height: 100%; */
+  margin-top: 0.2rem;
+`;
+
+const Quantity = styled.span`
+  letter-spacing: 0.112rem;
+  font-size: 1.6rem;
+
+  font-weight: 700;
+  color: var(--color-blue-100);
+`;
+
+const QuantityButton = styled.img`
+  cursor: pointer;
+  padding: 0.4rem;
+  transition: transform 0.3s ease;
+  &:hover {
+    filter: opacity(60%);
+  }
+`;
+
+const AddToCart = styled.button`
+  background-color: var(--color-orange-100);
+  color: var(--color-white);
+  padding: 1.7rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  width: 100%;
+  border: none;
+  border-radius: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0rem 1rem 3rem hsla(26, 100%, 55%, 0.3);
+
+  border: 0.2rem solid var(--color-orange-100);
+  transition: background 0.3s ease, color 0.3s ease;
+  &:hover {
+    background-color: transparent;
+    color: var(--color-orange-100);
+  }
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: start;
+  gap: 1.6rem;
+`;
+
+const CartIcon = styled(IoCartOutline)`
+  color: inherit;
+  height: 2rem;
+  width: 2.2rem;
+  transform: scale(110%);
 `;
 
 function ProductShowcase({ item }) {
   const [itemQuantity, setItemQuantity] = useState(0);
-  const { handleAddItem, handleRemoveItem } = useShoppingCart();
+  const { handleAddItem } = useShoppingCart();
 
   const {
     id,
@@ -109,9 +161,18 @@ function ProductShowcase({ item }) {
     quantity,
   } = item;
 
+  function onAddItem() {
+    if (itemQuantity == 0) return;
+    handleAddItem({
+      ...item,
+      quantity: itemQuantity,
+    });
+  }
+
   return (
     <StyledProductShowcase>
-      <ImagePlaceholder src={`${photos[0]}`} />
+      {/* <ImagePlaceholder src={`${photos[0]}`} /> */}
+      <ImageCarousel images={photos} thumbnails={thumbnails} />
       <ContentContainer>
         <CompanyTitle>Sneaker company</CompanyTitle>
         <Title>{title} </Title>
@@ -124,23 +185,27 @@ function ProductShowcase({ item }) {
           <Price>${price.toFixed(2)} </Price>
         </div>
 
-        <div>
+        <ButtonsContainer>
           <QuantityContainer>
-            <img
+            <QuantityButton
               src="/images/icon-minus.svg"
               alt="decrease quantity"
               onClick={() =>
                 setItemQuantity(itemQuantity => Math.max(0, itemQuantity - 1))
               }
             />
-            <span>{itemQuantity}</span>
-            <img
+            <Quantity>{itemQuantity}</Quantity>
+            <QuantityButton
               src="/images/icon-plus.svg"
               alt="increase quantity"
               onClick={() => setItemQuantity(itemQuantity + 1)}
             />
           </QuantityContainer>
-        </div>
+          <AddToCart onClick={onAddItem}>
+            <CartIcon />
+            <span>Add to cart</span>
+          </AddToCart>
+        </ButtonsContainer>
       </ContentContainer>
     </StyledProductShowcase>
   );

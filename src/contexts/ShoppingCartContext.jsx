@@ -30,12 +30,16 @@ export default function ShoppingCartProvider({ children }) {
 
   // handler for adding an item to the shopping list
   function handleAddItem(item) {
+    const isIncluded = shoppingCart.filter(olditem => olditem.id == item.id);
+    if (isIncluded?.length > 0) return;
     setShoppingCart(shoppingCart => [item, ...shoppingCart]);
   }
 
   // handler for removing an item from the shopping list
   function handleRemoveItem(id) {
-    setShoppingCart(shoppingCart => shoppingCart.filter(item => item.id == id));
+    const newShoppingCart = shoppingCart.filter(item => item.id !== id);
+    console.log(newShoppingCart);
+    setShoppingCart(newShoppingCart);
   }
 
   return (
