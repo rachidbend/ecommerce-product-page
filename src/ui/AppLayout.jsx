@@ -4,6 +4,10 @@ import ProductShowcase from './ProductShowcase';
 
 const StyledAppLayout = styled.div`
   font-family: var(--font-main);
+
+  @media screen and (max-width: 600px) {
+    overflow-x: hidden;
+  }
 `;
 
 const item = {

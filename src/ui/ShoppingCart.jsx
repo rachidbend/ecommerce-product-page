@@ -1,13 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from 'styled-components';
 import { useShoppingCart } from '../contexts/ShoppingCartContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LiaTimesSolid } from 'react-icons/lia';
 
 const StyledShoppingCart = styled.div`
   position: relative;
   margin-right: 4.6rem;
   font-family: var(--font-main);
+
+  @media screen and (max-width: 600px) {
+    margin-right: 2.2rem;
+    position: static;
+  }
 `;
 
 const ShoppingCartIcon = styled.img`
@@ -23,7 +28,17 @@ const ShoppingCartContainer = styled.div`
   right: 0;
   transform: translateX(50%);
   border-radius: 1rem;
+  z-index: 2000;
   /* padding: 2.6rem 2.4rem 3.2rem 2.4rem; */
+
+  @media screen and (max-width: 600px) {
+    transform: translateX(0%);
+    /* width: auto; */
+    top: 8rem;
+    left: 0.8rem;
+    right: -0.8rem;
+    /* width: 100%; */
+  }
 `;
 
 const CartTitle = styled.p`
@@ -55,30 +70,36 @@ const ItemContainer = styled.div`
   align-items: center;
   margin-bottom: 2.6rem;
 `;
+
 const ItemImage = styled.img`
   height: 5rem;
   width: 5rem;
   border-radius: 0.4rem;
 `;
+
 const ItemTitle = styled.h3`
   font-size: 1.6rem;
   color: var(--color-blue-300);
   font-weight: 400;
   margin-bottom: 1rem;
 `;
+
 const ItemPrice = styled.p`
   color: var(--color-blue-300);
   font-weight: 400;
 `;
+
 const ItemQuantity = styled.p`
   color: var(--color-blue-300);
   font-weight: 400;
   margin-right: 0.2rem;
 `;
+
 const ItemTotalPrice = styled.p`
   color: var(--color-blue-100);
   font-weight: 700;
 `;
+
 const ItemPriceContainer = styled.div`
   display: flex;
   gap: 0.4rem;
@@ -86,9 +107,11 @@ const ItemPriceContainer = styled.div`
   font-size: 1.6rem;
   align-items: baseline;
 `;
+
 const DeleteItemButton = styled.img`
   cursor: pointer;
 `;
+
 const ItemTextContainer = styled.div``;
 const IconTimes = styled(LiaTimesSolid)`
   height: 0.8rem;
@@ -140,7 +163,7 @@ const CartCount = styled.p`
 function ShoppingCart() {
   const [isOpen, setIsOpen] = useState(false);
   const { shoppingCart, handleRemoveItem } = useShoppingCart();
-
+  const ref = useRef();
   function handleDeleteItem(id) {
     handleRemoveItem(id);
   }
@@ -150,6 +173,17 @@ function ShoppingCart() {
   shoppingCart?.map(cur => {
     allCount = allCount + cur.quantity;
   });
+
+  useEffect(
+    function () {
+      function handleClick(e) {
+        if (ref.current && !ref.current.contains(e.target)) setIsOpen(false);
+      }
+      document.addEventListener('click', handleClick, true);
+      return () => document.removeEventListener('click', handleClick);
+    },
+    [setIsOpen]
+  );
 
   return (
     <StyledShoppingCart>
@@ -162,7 +196,7 @@ function ShoppingCart() {
         {shoppingCart?.length > 0 && <CartCount>{allCount}</CartCount>}
       </ShoppingCartIconContainer>
       {isOpen && (
-        <ShoppingCartContainer>
+        <ShoppingCartContainer ref={ref}>
           <CartTitle>Cart</CartTitle>
           {shoppingCart?.length == 0 && (
             <EmtyCart>Your cart is empty.</EmtyCart>

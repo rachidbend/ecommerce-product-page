@@ -14,12 +14,10 @@ const Overlay = styled.div`
   height: 100svh;
   width: 100%;
   background-color: var(--color-background-overlay);
-  /* opacity: 0.6; */
 
   display: flex;
   justify-content: center;
   align-items: center;
-
   backdrop-filter: blur(10px);
 `;
 
@@ -41,12 +39,6 @@ const CloseIcon = styled(FaTimes)`
   }
 `;
 
-const MainImage = styled.img`
-  width: 55rem;
-  height: auto;
-  border-radius: 1.2rem;
-`;
-
 const ThumbnailsContainer = styled.div`
   display: flex;
   flex-wrap: nowrap;
@@ -58,7 +50,7 @@ const ThumbnailWrapper = styled.div`
   height: 8.8rem;
   width: 8.8rem;
   position: relative;
-  border-radius: 0.6rem;
+  border-radius: 1rem;
   border: 0.2rem solid
     ${props =>
       props.active == 'true' ? 'var(--color-orange-100)' : 'transparent'};
@@ -91,7 +83,7 @@ const Thumbnail = styled.img`
   position: relative;
 `;
 
-const MainImageCOntainer = styled.div`
+const MainImageContainer = styled.div`
   position: relative;
 `;
 
@@ -111,11 +103,13 @@ const ArrowForwardContainer = styled.div`
     color: var(--color-orange-100);
   }
 `;
+
 const ArrowForward = styled(IoIosArrowForward)`
   height: 2.4rem;
   width: auto;
   color: inherit;
 `;
+
 const ArrowBackContainer = styled.div`
   padding: 1.6rem;
   background-color: white;
@@ -128,14 +122,35 @@ const ArrowBackContainer = styled.div`
   transition: color 0.3s ease;
   cursor: pointer;
   text-align: center;
+  z-index: 9999;
   &:hover {
     color: var(--color-orange-100);
   }
 `;
+
 const ArrowBack = styled(IoIosArrowBack)`
   height: 2.4rem;
   width: auto;
   color: inherit;
+`;
+
+const ImageContainer = styled.div`
+  overflow: hidden;
+  display: flex;
+  position: relative;
+  border-radius: 1.6rem;
+  width: 55rem;
+  height: auto;
+  aspect-ratio: 1/1;
+`;
+
+const MainImage = styled.img`
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+  transition: left 0.3s ease;
+  position: absolute;
+  left: ${props => props.position};
 `;
 
 function ImagesModal({ images, thumbnails, initialImage, onClosemodal }) {
@@ -157,19 +172,33 @@ function ImagesModal({ images, thumbnails, initialImage, onClosemodal }) {
     }
   };
 
+  // close the modal when the overlay itself is clicked, not some content inside it
+  function onOverlayClick(e) {
+    if (e.target.classList.contains('overlay')) onClosemodal();
+  }
+
   return createPortal(
-    <Overlay>
+    <Overlay className="overlay" onClick={onOverlayClick}>
       <StyledImagesModal>
         <CloseIcon onClick={onClosemodal} />
-        <MainImageCOntainer>
+        <MainImageContainer>
           <ArrowBackContainer onClick={handleBack}>
             <ArrowBack />
           </ArrowBackContainer>
-          <MainImage src={`/public/${images[count]}`} />
+          <ImageContainer>
+            {images.map((image, index) => (
+              <MainImage
+                /* the index - imageCount is what defines the position of each image*/
+                position={`${(index - count) * 100}%`}
+                key={`image-${image}`}
+                src={`/public/${image}`}
+              />
+            ))}
+          </ImageContainer>
           <ArrowForwardContainer onClick={handleForward}>
             <ArrowForward />
           </ArrowForwardContainer>
-        </MainImageCOntainer>
+        </MainImageContainer>
         <ThumbnailsContainer>
           {thumbnails.map((thumbnail, index) => (
             <ThumbnailWrapper

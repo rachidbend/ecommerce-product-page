@@ -17,9 +17,21 @@ const StyledProductShowcase = styled.div`
   grid-template-rows: auto;
   align-items: center;
   font-family: var(--font-main);
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+    gap: 1.6rem;
+  }
 `;
 
-const ContentContainer = styled.div``;
+const ContentContainer = styled.div`
+  @media screen and (max-width: 600px) {
+    padding: 0 2.4rem;
+  }
+`;
 const CompanyTitle = styled.p`
   font-size: 1.4rem;
   color: var(--color-orange-100);
@@ -27,7 +39,11 @@ const CompanyTitle = styled.p`
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 2rem;
-  margin-bottom: 2rem;
+
+  @media screen and (max-width: 600px) {
+    font-size: 1.3rem;
+    margin-bottom: 1.6rem;
+  }
 `;
 
 const Title = styled.h2`
@@ -36,6 +52,12 @@ const Title = styled.h2`
   color: var(--color-blue-100);
   line-height: 4.7rem;
   margin-bottom: 3.8rem;
+
+  @media screen and (max-width: 600px) {
+    font-size: 2.8rem;
+    margin-bottom: 1.6rem;
+    line-height: 3.2rem;
+  }
 `;
 const Description = styled.p`
   font-size: 1.6rem;
@@ -43,6 +65,12 @@ const Description = styled.p`
   color: var(--color-blue-200);
   font-weight: 400;
   margin-bottom: 2.5rem;
+
+  @media screen and (max-width: 600px) {
+    line-height: 2.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
 `;
 
 const Price = styled.p`
@@ -52,6 +80,11 @@ const Price = styled.p`
   font-weight: 700;
   color: var(--color-blue-300);
   text-decoration: line-through;
+
+  @media screen and (max-width: 600px) {
+    margin: 0;
+    font-size: 1.6rem;
+  }
 `;
 const Discount = styled.p`
   letter-spacing: 0.112rem;
@@ -79,7 +112,7 @@ const DiscountContainer = styled.div`
 // ***********************************
 
 const QuantityContainer = styled.div`
-  padding: 1.8rem 0.8rem;
+  /* padding: 1.8rem 0.8rem; */
   width: 15.7rem;
   height: 5rem;
   display: flex;
@@ -89,6 +122,10 @@ const QuantityContainer = styled.div`
   border-radius: 0.9rem;
   /* height: 100%; */
   margin-top: 0.2rem;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const Quantity = styled.span`
@@ -99,13 +136,25 @@ const Quantity = styled.span`
   color: var(--color-blue-100);
 `;
 
-const QuantityButton = styled.img`
+const QuantityButtonContainer = styled.div`
+  padding: 0 0.8rem;
+  height: 100%;
   cursor: pointer;
-  padding: 0.4rem;
-  transition: transform 0.3s ease;
-  &:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover img {
     filter: opacity(60%);
   }
+
+  @media screen and (max-width: 600px) {
+    padding: 2.4rem;
+  }
+`;
+
+const QuantityButton = styled.img`
+  transition: filter 0.3s ease;
 `;
 
 const AddToCart = styled.button`
@@ -136,6 +185,12 @@ const ButtonsContainer = styled.div`
   display: flex;
   justify-content: start;
   gap: 1.6rem;
+
+  @media screen and (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8.8rem;
+  }
 `;
 
 const CartIcon = styled(IoCartOutline)`
@@ -143,6 +198,16 @@ const CartIcon = styled(IoCartOutline)`
   height: 2rem;
   width: 2.2rem;
   transform: scale(110%);
+`;
+
+const PriceContainer = styled.div`
+  @media screen and (max-width: 600px) {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.4rem;
+  }
 `;
 
 function ProductShowcase({ item }) {
@@ -171,35 +236,40 @@ function ProductShowcase({ item }) {
 
   return (
     <StyledProductShowcase>
-      {/* <ImagePlaceholder src={`${photos[0]}`} /> */}
       <ImageCarousel images={photos} thumbnails={thumbnails} />
       <ContentContainer>
         <CompanyTitle>Sneaker company</CompanyTitle>
         <Title>{title} </Title>
         <Description>{description}</Description>
-        <div>
+        <PriceContainer>
           <DiscountContainer>
             <DiscountPrice>${priceAfterDiscount.toFixed(2)}</DiscountPrice>
             <Discount>{discount}%</Discount>
           </DiscountContainer>
           <Price>${price.toFixed(2)} </Price>
-        </div>
+        </PriceContainer>
 
         <ButtonsContainer>
           <QuantityContainer>
-            <QuantityButton
-              src="/images/icon-minus.svg"
-              alt="decrease quantity"
+            <QuantityButtonContainer
               onClick={() =>
                 setItemQuantity(itemQuantity => Math.max(0, itemQuantity - 1))
               }
-            />
+            >
+              <QuantityButton
+                src="/images/icon-minus.svg"
+                alt="decrease quantity"
+              />
+            </QuantityButtonContainer>
             <Quantity>{itemQuantity}</Quantity>
-            <QuantityButton
-              src="/images/icon-plus.svg"
-              alt="increase quantity"
+            <QuantityButtonContainer
               onClick={() => setItemQuantity(itemQuantity + 1)}
-            />
+            >
+              <QuantityButton
+                src="/images/icon-plus.svg"
+                alt="increase quantity"
+              />
+            </QuantityButtonContainer>
           </QuantityContainer>
           <AddToCart onClick={onAddItem}>
             <CartIcon />
