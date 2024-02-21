@@ -13,7 +13,7 @@ const StyledProductShowcase = styled.div`
 
   display: grid;
   grid-template-columns: 44.5rem 1fr;
-  gap: 6rem;
+  gap: 12.5rem;
   grid-template-rows: auto;
   align-items: center;
   font-family: var(--font-main);
