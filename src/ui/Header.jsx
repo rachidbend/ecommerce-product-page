@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import ShoppingCart from './ShoppingCart';
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const StyledHeader = styled.div`
   display: flex;
@@ -20,11 +21,17 @@ const StyledHeader = styled.div`
 
 const Logo = styled.img`
   margin-right: 5.7rem;
-`;
-const Nav = styled.nav`
+
   @media screen and (max-width: 600px) {
-    display: ${props => (props.show == 'true' ? 'block' : 'none')};
-    position: absolute;
+    margin-right: 2.4rem;
+  }
+`;
+const Nav = styled(motion.nav)`
+  @media screen and (max-width: 600px) {
+    /* display: ${props => (props.show == 'true' ? 'block' : 'none')}; */
+
+    display: block;
+    position: fixed;
     height: 100vh;
     height: 100svh;
     background-color: var(--color-white);
@@ -117,11 +124,11 @@ const CloseMenu = styled.img`
   }
 `;
 
-const MenuOverlay = styled.div`
+const MenuOverlay = styled(motion.div)`
   display: none;
   @media screen and (max-width: 600px) {
     display: ${props => (props.show == 'true' ? 'block' : 'none')};
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -134,7 +141,7 @@ const MenuOverlay = styled.div`
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const isMobile = window.innerWidth < 600;
   const ref = useRef();
 
   useEffect(
@@ -143,10 +150,17 @@ function Header() {
         if (ref.current && !ref.current.contains(e.target))
           setIsMenuOpen(false);
       }
-      document.addEventListener('click', handleClick, true);
-      return () => document.removeEventListener('click', handleClick);
+      if (window.innerWidth > 600) {
+        setIsMenuOpen(true);
+        return;
+      }
+      if (isMobile) {
+        document.addEventListener('click', handleClick, true);
+
+        return () => document.removeEventListener('click', handleClick);
+      }
     },
-    [setIsMenuOpen]
+    [setIsMenuOpen, window.innerWidth]
   );
 
   return (
@@ -158,21 +172,62 @@ function Header() {
           alt="open menu"
         />
         <Logo src="/images/logo.svg" alt="sneakers logo" />
-        <MenuOverlay show={isMenuOpen ? 'true' : 'false'}></MenuOverlay>
-        <Nav show={isMenuOpen ? 'true' : 'false'} ref={ref}>
-          <CloseMenu
-            onClick={() => setIsMenuOpen(false)}
-            src="/public/images/icon-close.svg"
-            alt="close menu"
-          />
-          <NavList>
-            <NavLink>Collections</NavLink>
-            <NavLink>Men</NavLink>
-            <NavLink>Women</NavLink>
-            <NavLink>About</NavLink>
-            <NavLink>Contact</NavLink>
-          </NavList>
-        </Nav>
+        <AnimatePresence>
+          {isMenuOpen && (
+            <>
+              <MenuOverlay
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                show={isMenuOpen ? 'true' : 'false'}
+              ></MenuOverlay>
+
+              <Nav
+                initial={{
+                  x: isMobile ? '-100%' : 0,
+                }}
+                animate={{
+                  x: '0%',
+
+                  transition: {
+                    type: 'spring',
+                    bounce: 0,
+                    duration: 0.4,
+                  },
+                }}
+                exit={{
+                  x: '-100%',
+                  transition: {
+                    type: 'spring',
+                    bounce: 0,
+                    duration: 0.4,
+                  },
+                }}
+                show={isMenuOpen ? 'true' : 'false'}
+                ref={ref}
+              >
+                <CloseMenu
+                  onClick={() => setIsMenuOpen(false)}
+                  src="/public/images/icon-close.svg"
+                  alt="close menu"
+                />
+                <NavList>
+                  <NavLink>Collections</NavLink>
+                  <NavLink>Men</NavLink>
+                  <NavLink>Women</NavLink>
+                  <NavLink>About</NavLink>
+                  <NavLink>Contact</NavLink>
+                </NavList>
+              </Nav>
+            </>
+          )}
+        </AnimatePresence>
       </Container>
       <Container>
         <ShoppingCart />

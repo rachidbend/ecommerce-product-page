@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useShoppingCart } from '../contexts/ShoppingCartContext';
 import { useEffect, useRef, useState } from 'react';
 import { LiaTimesSolid } from 'react-icons/lia';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const StyledShoppingCart = styled.div`
   position: relative;
@@ -19,7 +20,7 @@ const ShoppingCartIcon = styled.img`
   cursor: pointer;
 `;
 
-const ShoppingCartContainer = styled.div`
+const ShoppingCartContainer = styled(motion.div)`
   width: 36rem;
   background-color: var(--color-white);
   box-shadow: 0rem 0rem 2.4rem var(--color-grey-100);
@@ -29,7 +30,6 @@ const ShoppingCartContainer = styled.div`
   transform: translateX(50%);
   border-radius: 1rem;
   z-index: 2000;
-  /* padding: 2.6rem 2.4rem 3.2rem 2.4rem; */
 
   @media screen and (max-width: 600px) {
     transform: translateX(0%);
@@ -37,7 +37,7 @@ const ShoppingCartContainer = styled.div`
     top: 8rem;
     left: 0.8rem;
     right: -0.8rem;
-    /* width: 100%; */
+    width: calc(100% - 1.6rem);
   }
 `;
 
@@ -163,6 +163,7 @@ const CartCount = styled.p`
 function ShoppingCart() {
   const [isOpen, setIsOpen] = useState(false);
   const { shoppingCart, handleRemoveItem } = useShoppingCart();
+  const isMobile = window.innerWidth < 600;
   const ref = useRef();
   function handleDeleteItem(id) {
     handleRemoveItem(id);
@@ -195,44 +196,66 @@ function ShoppingCart() {
         />
         {shoppingCart?.length > 0 && <CartCount>{allCount}</CartCount>}
       </ShoppingCartIconContainer>
-      {isOpen && (
-        <ShoppingCartContainer ref={ref}>
-          <CartTitle>Cart</CartTitle>
-          {shoppingCart?.length == 0 && (
-            <EmtyCart>Your cart is empty.</EmtyCart>
-          )}
-          {shoppingCart?.length > 0 && (
-            <CartContentContainer>
-              {/* for now it is empty */}
-              {shoppingCart?.length > 0 &&
-                shoppingCart?.map(item => (
-                  <ItemContainer key={item.id}>
-                    <ItemImage src={`/public/${item?.photos[0]}`} />
-                    <ItemTextContainer>
-                      <ItemTitle>{item.title}</ItemTitle>
-                      <ItemPriceContainer>
-                        <ItemPrice>${item.priceAfterDiscount}</ItemPrice>
-                        <IconTimes />
-                        <ItemQuantity>{item.quantity}</ItemQuantity>
-                        <ItemTotalPrice>
-                          $
-                          {(item.priceAfterDiscount * item.quantity).toFixed(2)}
-                        </ItemTotalPrice>
-                      </ItemPriceContainer>
-                    </ItemTextContainer>
-                    <DeleteItemButton
-                      onClick={() => handleDeleteItem(item.id)}
-                      src="/public/images/icon-delete.svg"
-                    />
-                  </ItemContainer>
-                ))}
-              {shoppingCart?.length > 0 && (
-                <CheckoutButton>Checkout</CheckoutButton>
-              )}
-            </CartContentContainer>
-          )}
-        </ShoppingCartContainer>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <ShoppingCartContainer
+            initial={{
+              opacity: 0,
+              transform: isMobile
+                ? 'translate(0, -20px)'
+                : 'translate(50%, -20px)',
+            }}
+            animate={{
+              opacity: 1,
+              transform: isMobile ? 'translate(0, 0)' : 'translate(50%, 0)',
+            }}
+            exit={{
+              opacity: 0,
+              transform: isMobile
+                ? 'translate(0, -20px)'
+                : 'translate(50%, -20px)',
+            }}
+            ref={ref}
+          >
+            <CartTitle>Cart</CartTitle>
+            {shoppingCart?.length == 0 && (
+              <EmtyCart>Your cart is empty.</EmtyCart>
+            )}
+            {shoppingCart?.length > 0 && (
+              <CartContentContainer>
+                {/* for now it is empty */}
+                {shoppingCart?.length > 0 &&
+                  shoppingCart?.map(item => (
+                    <ItemContainer key={item.id}>
+                      <ItemImage src={`/public/${item?.photos[0]}`} />
+                      <ItemTextContainer>
+                        <ItemTitle>{item.title}</ItemTitle>
+                        <ItemPriceContainer>
+                          <ItemPrice>${item.priceAfterDiscount}</ItemPrice>
+                          <IconTimes />
+                          <ItemQuantity>{item.quantity}</ItemQuantity>
+                          <ItemTotalPrice>
+                            $
+                            {(item.priceAfterDiscount * item.quantity).toFixed(
+                              2
+                            )}
+                          </ItemTotalPrice>
+                        </ItemPriceContainer>
+                      </ItemTextContainer>
+                      <DeleteItemButton
+                        onClick={() => handleDeleteItem(item.id)}
+                        src="/public/images/icon-delete.svg"
+                      />
+                    </ItemContainer>
+                  ))}
+                {shoppingCart?.length > 0 && (
+                  <CheckoutButton>Checkout</CheckoutButton>
+                )}
+              </CartContentContainer>
+            )}
+          </ShoppingCartContainer>
+        )}
+      </AnimatePresence>
     </StyledShoppingCart>
   );
 }
