@@ -227,7 +227,7 @@ function ShoppingCart() {
                 {shoppingCart?.length > 0 &&
                   shoppingCart?.map(item => (
                     <ItemContainer key={item.id}>
-                      <ItemImage src={`/public/${item?.photos[0]}`} />
+                      <ItemImage src={`${item?.photos[0]}`} />
                       <ItemTextContainer>
                         <ItemTitle>{item.title}</ItemTitle>
                         <ItemPriceContainer>
@@ -244,7 +244,7 @@ function ShoppingCart() {
                       </ItemTextContainer>
                       <DeleteItemButton
                         onClick={() => handleDeleteItem(item.id)}
-                        src="/public/images/icon-delete.svg"
+                        src="images/icon-delete.svg"
                       />
                     </ItemContainer>
                   ))}
