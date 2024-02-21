@@ -191,7 +191,7 @@ function ImageCarousel({ images, thumbnails }) {
       setImageCount(imageCount => imageCount - 1);
     }
   };
-
+  console.log(thumbnails);
   return (
     <StyledImageCarousel>
       {/* 1. showcased image */}
@@ -205,7 +205,7 @@ function ImageCarousel({ images, thumbnails }) {
             /* the index - imageCount is what defines the position of each image*/
             position={`${(index - imageCount) * 100}%`}
             key={`image-${image}`}
-            src={`/public/${image}`}
+            src={`${image}`}
             onClick={handleImageClick}
           />
         ))}
@@ -221,7 +221,7 @@ function ImageCarousel({ images, thumbnails }) {
             active={index === imageCount ? 'true' : 'false'}
             key={`${thumbnail}`}
           >
-            <Thumbnail src={`/public/${thumbnail}`} />
+            <Thumbnail src={`${thumbnail}`} />
           </ThumbnailWrapper>
         ))}
       </ThumbnailsContainer>

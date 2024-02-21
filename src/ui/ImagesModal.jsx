@@ -191,7 +191,7 @@ function ImagesModal({ images, thumbnails, initialImage, onClosemodal }) {
                 /* the index - imageCount is what defines the position of each image*/
                 position={`${(index - count) * 100}%`}
                 key={`image-${image}`}
-                src={`/public/${image}`}
+                src={`${image}`}
               />
             ))}
           </ImageContainer>
@@ -206,7 +206,7 @@ function ImagesModal({ images, thumbnails, initialImage, onClosemodal }) {
               active={index === count ? 'true' : 'false'}
               key={`${thumbnail}`}
             >
-              <Thumbnail src={`/public/${thumbnail}`} />
+              <Thumbnail src={`${thumbnail}`} />
             </ThumbnailWrapper>
           ))}
         </ThumbnailsContainer>

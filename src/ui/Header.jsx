@@ -168,7 +168,7 @@ function Header() {
       <Container>
         <MenuIcon
           onClick={() => setIsMenuOpen(true)}
-          src="/public/images/icon-menu.svg"
+          src="/images/icon-menu.svg"
           alt="open menu"
         />
         <Logo src="/images/logo.svg" alt="sneakers logo" />
@@ -214,7 +214,7 @@ function Header() {
               >
                 <CloseMenu
                   onClick={() => setIsMenuOpen(false)}
-                  src="/public/images/icon-close.svg"
+                  src="/images/icon-close.svg"
                   alt="close menu"
                 />
                 <NavList>
